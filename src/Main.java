@@ -6,13 +6,12 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         int percision = 3;
-        int companies = 500;
         int limit = (int)Math.pow(10,2+percision);
         int numThreads = 4;
         int window = limit/numThreads;
 
         List<Thread> lstThreads = new ArrayList<>();
-
+        ZipFileHandler zp = new ZipFileHandler("./");
         for(int index= 0; index<numThreads;index++)
         {
             int start = index *window;
@@ -21,12 +20,16 @@ public class Main {
             Thread th = new Thread(port);
             th.setName("th_" + index);
             lstThreads.add(th);
-            th.start();
+            //th.start();
         }
+        Thread th_zip = new Thread(zp, "zipping");
+        //th_zip.setDaemon(true);
+        th_zip.start();
+        lstThreads.add(th_zip);
         try{
             for(Thread th:lstThreads)
             {
-                th.join();
+                //th.join();
             }
         }
         catch (Exception ex)

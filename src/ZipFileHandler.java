@@ -12,21 +12,29 @@ import java.util.ArrayList;
 public class ZipFileHandler implements Runnable {
 
     private String baseFolderPath;
-    private long sleepTime = 1000*60*10;
+    private long sleepTime;
     private String zippFileFolder;
     public ZipFileHandler(String baseFolderPath)
     {
         StringBuilder stringBuilder = new StringBuilder();
         this.baseFolderPath = baseFolderPath;
         stringBuilder.append(this.baseFolderPath);
-        stringBuilder.append(File.pathSeparator);
+        stringBuilder.append(File.separator);
         stringBuilder.append("zipped");
-        stringBuilder.append(File.pathSeparator);
+        stringBuilder.append(File.separator);
+
         this.zippFileFolder = stringBuilder.toString();
+        File fl = new File(this.zippFileFolder);
+        if(!fl.exists())
+        {
+            fl.mkdirs();
+        }
+        this.sleepTime = Constants.ZIP_FILE_DELAY;
     }
     public List<String> getListToZip()
     {
         File fl = new File(this.baseFolderPath);
+        System.out.println("this.baseFolderPath--->"+this.baseFolderPath);
         if(!fl.exists() || !fl.isDirectory())
         {
             return null;
@@ -34,20 +42,33 @@ public class ZipFileHandler implements Runnable {
         Stack<File> stckDirectory = new Stack<>();
         List<String> lstFileList = new ArrayList<>();
         do{
+            System.out.println(fl.getAbsolutePath());
             for(File subFiles:fl.listFiles())
             {
-                if(fl.isDirectory())
+                System.out.println("subFiles.getAbsolutePath()--->"+subFiles.getAbsolutePath());
+                if(subFiles.isDirectory())
                 {
-                    stckDirectory.add(fl);
+                    stckDirectory.add(subFiles);
+
                     continue;
                 }
-                if(fl.getName().endsWith("_tozip.txt"))
+                if(subFiles.getName().endsWith("_tozip.txt"))
                 {
-                    lstFileList.add(fl.getAbsolutePath() );
+                    lstFileList.add(subFiles.getAbsolutePath() );
                 }
-                fl = stckDirectory.pop();
+
             }
-        }while(!stckDirectory.isEmpty());
+            if(stckDirectory.isEmpty())
+            {
+                fl = null;
+            }
+            else
+            {
+                fl = stckDirectory.pop();
+
+            }
+
+        }while(fl!=null);
         return lstFileList;
     }
     public void run()
@@ -56,12 +77,15 @@ public class ZipFileHandler implements Runnable {
         while(true)
         {
             try{
-                Thread.sleep(this.sleepTime);
+                System.out.println("here");
                 for(String fileAbsPath:getListToZip())
                 {
+                    System.out.println(fileAbsPath);
                     zipFile(fileAbsPath);
                 }
 
+                Thread.sleep(this.sleepTime);
+                break;
             }
             catch (InterruptedException e) {
                 throw new RuntimeException(e);

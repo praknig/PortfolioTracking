@@ -109,14 +109,19 @@ public class PortfolioBuilder implements Runnable {
     {
 
         StringBuilder newFileNameBuilder = new StringBuilder();
+
+
+
         newFileNameBuilder.append(fl.getParentFile().getAbsolutePath());
-        newFileNameBuilder.append(File.pathSeparator);
+        newFileNameBuilder.append(File.separator);
+
         newFileNameBuilder.append("portfolio__");
         newFileNameBuilder.append(Thread.currentThread().getName());
         newFileNameBuilder.append("___");
         newFileNameBuilder.append(System.currentTimeMillis());
         newFileNameBuilder.append("_tozip.txt");
         File newFile = new File(newFileNameBuilder.toString());
+        System.out.println(newFile.getAbsolutePath());
         fl.renameTo(newFile);
 
     }
@@ -136,7 +141,7 @@ public class PortfolioBuilder implements Runnable {
         String foliosDataLocal = this.foliosData.toString();
         this.foliosData.setLength(0);
         String lastLine = this.returnLastLine(foliosDataLocal);
-        System.out.println("Thread=" + Thread.currentThread().getName() + "  " +lastLine);
+        //System.out.println("Thread=" + Thread.currentThread().getName() + "  " +lastLine);
         updateConfigFile(lastLine);
         this.folioSize = 0;
         File fl = new File(this.fileName);
@@ -163,6 +168,7 @@ public class PortfolioBuilder implements Runnable {
                 break;
         }
         if (sum == limit) {
+
             writeToFile(numArray);
         }
     }
@@ -176,12 +182,14 @@ public class PortfolioBuilder implements Runnable {
         int lastIndex = companies - 1;
         int limit = (int) Math.pow(10, precision + 2);
         int[] companiesArray = loadInitialArray();
+
         while (companiesArray[lastIndex] < end) {
             companiesArray[0]++;
             if (companiesArray[0] > limit) {
                 makeCarryAdjustments(companiesArray, limit);
             }
             checkForTotal(companiesArray, limit);
+
         }
         System.out.println("Thread Ended " + Thread.currentThread().getName() + " start " + this.start + " end " + this.end);
 
