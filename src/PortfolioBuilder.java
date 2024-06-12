@@ -90,7 +90,7 @@ public class PortfolioBuilder implements Runnable {
     private void updateConfigFile(String data)
     {
         String configFile = this.configFile;
-        File
+        //File
     }
     private void renameFile(File fl)
     {
