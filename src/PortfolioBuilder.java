@@ -89,8 +89,21 @@ public class PortfolioBuilder implements Runnable {
     }
     private void updateConfigFile(String data)
     {
-        String configFile = this.configFile;
-        //File
+        try{
+            String configFile = this.configFile;
+            File file = new File(configFile);
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(),false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(data);
+            bw.close();
+            fw.close();
+
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
     private void renameFile(File fl)
     {
@@ -124,7 +137,7 @@ public class PortfolioBuilder implements Runnable {
         this.foliosData.setLength(0);
         String lastLine = this.returnLastLine(foliosDataLocal);
         System.out.println("Thread=" + Thread.currentThread().getName() + "  " +lastLine);
-
+        updateConfigFile(lastLine);
         this.folioSize = 0;
         File fl = new File(this.fileName);
         try {
@@ -180,30 +193,29 @@ public class PortfolioBuilder implements Runnable {
         int companies = this.companies;
         int companiesArray[] = new int[companies];
         companiesArray[companies-1] = start;
-        File portfolioFile = new File(this.fileName);
+        File portfolioFile = new File(this.configFile);
         if (portfolioFile.exists()) {
             try {
                 FileReader fr = new FileReader(portfolioFile.getAbsolutePath());
                 BufferedReader bufferedReader = new BufferedReader(fr);
-                String line, prevLine = null;
-                while (true) {
-                    line = bufferedReader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    prevLine = line;
-
-                }
-                if (prevLine == null || prevLine.length() == 0) {
+                String line =  bufferedReader.readLine();
+                bufferedReader.close();
+                fr.close();
+                if (line == null || line.length() == 0) {
                     return companiesArray;
                 } else {
                     int index = 0;
-                    String percentages[] = prevLine.split("\\|");
+                    String percentages[] = line.split("\\|");
                     for (String percentage : percentages) {
                         percentage = percentage.trim();
                         if(percentage == null  || percentage.length() == 0)
-                            continue;
-                        companiesArray[index] = Integer.valueOf(percentage);
+                        {
+                            companiesArray[index] = 0;
+                        }
+                        else {
+                            companiesArray[index] = Integer.valueOf(percentage);
+                        }
+
                         index++;
                     }
                 }
@@ -211,6 +223,14 @@ public class PortfolioBuilder implements Runnable {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+        else {
+            for(int index = 0;index <companies;index++)
+            {
+
+                companiesArray[index] =0;
+            }
+            companiesArray[companies-1] = start;
         }
         return companiesArray;
 
