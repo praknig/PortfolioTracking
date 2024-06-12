@@ -141,7 +141,7 @@ public class PortfolioBuilder implements Runnable {
         String foliosDataLocal = this.foliosData.toString();
         this.foliosData.setLength(0);
         String lastLine = this.returnLastLine(foliosDataLocal);
-        //System.out.println("Thread=" + Thread.currentThread().getName() + "  " +lastLine);
+        System.out.println("Thread=" + Thread.currentThread().getName() + "  " +lastLine);
         updateConfigFile(lastLine);
         this.folioSize = 0;
         File fl = new File(this.fileName);

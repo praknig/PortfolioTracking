@@ -9,27 +9,27 @@ public class Main {
         int limit = (int)Math.pow(10,2+percision);
         int numThreads = 4;
         int window = limit/numThreads;
-
         List<Thread> lstThreads = new ArrayList<>();
         ZipFileHandler zp = new ZipFileHandler("./");
+        int start = Constants.START;
         for(int index= 0; index<numThreads;index++)
         {
-            int start = index *window;
-            int end = (index+1)*window;
+            start = index;
+            int end = index+1;
             PortfolioBuilder port = new PortfolioBuilder(start,end );
             Thread th = new Thread(port);
             th.setName("th_" + index);
             lstThreads.add(th);
-            //th.start();
+            th.start();
         }
         Thread th_zip = new Thread(zp, "zipping");
-        //th_zip.setDaemon(true);
+        th_zip.setDaemon(true);
         th_zip.start();
         lstThreads.add(th_zip);
         try{
             for(Thread th:lstThreads)
             {
-                //th.join();
+                th.join();
             }
         }
         catch (Exception ex)

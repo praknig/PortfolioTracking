@@ -77,15 +77,16 @@ public class ZipFileHandler implements Runnable {
         while(true)
         {
             try{
-                System.out.println("here");
+
                 for(String fileAbsPath:getListToZip())
                 {
-                    System.out.println(fileAbsPath);
+                    System.out.println("zipping---->"+fileAbsPath);
                     zipFile(fileAbsPath);
                 }
 
                 Thread.sleep(this.sleepTime);
-                break;
+
+//                /break;
             }
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
