@@ -17,6 +17,7 @@ public class PortfolioBuilder implements Runnable {
     private String workingFolder;
     private int folioSizeLimit;
     private int folioSize;
+    private String configFile;
 
     public PortfolioBuilder(int start, int end) {
         this.start = start;
@@ -24,6 +25,7 @@ public class PortfolioBuilder implements Runnable {
         this.folioSize = 0;
         this.numWrites = 0;
         this.fileName = "portfolios.txt";
+        this.configFile = "portfolio_config.txt";
         this.companies = Constants.COMPANIES;
         this.precision =  Constants.PERCISION;
         this.writeLimit = Constants.WRITE_FILE_LIMIT;
@@ -38,7 +40,20 @@ public class PortfolioBuilder implements Runnable {
         if (!fl.exists()) {
             fl.mkdir();
         }
+
         this.fileName = this.workingFolder + File.separator + this.fileName;
+        this.configFile = this.workingFolder + File.separator + this.configFile;
+        fl = new File(this.configFile);
+        try{
+            if(!fl.exists())
+            {
+                fl.createNewFile();
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         runTheShow();
     }
 
@@ -65,11 +80,17 @@ public class PortfolioBuilder implements Runnable {
         System.out.println(stringBuilder);
 
     }
-    private void printLastLine(String data)
+    private String returnLastLine(String data)
     {
         int lastIndex = data.length()-1;
         int secondLastIndex = data.substring(0,lastIndex-1).lastIndexOf(System.lineSeparator());
-        System.out.println("Thread=" + Thread.currentThread().getName() + "  " +data.substring(secondLastIndex,lastIndex));
+        return data.substring(secondLastIndex,lastIndex);
+
+    }
+    private void updateConfigFile(String data)
+    {
+        String configFile = this.configFile;
+        File
     }
     private void renameFile(File fl)
     {
@@ -101,7 +122,9 @@ public class PortfolioBuilder implements Runnable {
 
         String foliosDataLocal = this.foliosData.toString();
         this.foliosData.setLength(0);
-        printLastLine(foliosDataLocal);
+        String lastLine = this.returnLastLine(foliosDataLocal);
+        System.out.println("Thread=" + Thread.currentThread().getName() + "  " +lastLine);
+
         this.folioSize = 0;
         File fl = new File(this.fileName);
         try {
