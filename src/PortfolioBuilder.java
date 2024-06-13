@@ -90,6 +90,7 @@ public class PortfolioBuilder implements Runnable {
     private void updateConfigFile(String data)
     {
         try{
+            data = data.trim();
             String configFile = this.configFile;
             File file = new File(configFile);
             FileWriter fw = new FileWriter(file.getAbsoluteFile(),false);
@@ -109,19 +110,14 @@ public class PortfolioBuilder implements Runnable {
     {
 
         StringBuilder newFileNameBuilder = new StringBuilder();
-
-
-
         newFileNameBuilder.append(fl.getParentFile().getAbsolutePath());
         newFileNameBuilder.append(File.separator);
-
         newFileNameBuilder.append("portfolio__");
         newFileNameBuilder.append(Thread.currentThread().getName());
         newFileNameBuilder.append("___");
         newFileNameBuilder.append(System.currentTimeMillis());
         newFileNameBuilder.append("_tozip.txt");
         File newFile = new File(newFileNameBuilder.toString());
-        System.out.println(newFile.getAbsolutePath());
         fl.renameTo(newFile);
 
     }
@@ -130,7 +126,6 @@ public class PortfolioBuilder implements Runnable {
         for (int i = 0; i < this.companies; i++) {
 
             this.foliosData.append(numArray[i]).append("|");
-
         }
         this.foliosData.deleteCharAt(this.foliosData.length()-1);
         this.foliosData.append(System.lineSeparator());
@@ -172,7 +167,6 @@ public class PortfolioBuilder implements Runnable {
             writeToFile(numArray);
         }
     }
-
     private void runTheShow() {
 
         System.out.println("Thread Started " + Thread.currentThread().getName() + " start " + this.start + " end " + this.end);
@@ -182,14 +176,13 @@ public class PortfolioBuilder implements Runnable {
         int lastIndex = companies - 1;
         int limit = (int) Math.pow(10, precision + 2);
         int[] companiesArray = loadInitialArray();
-
+        printArray(companiesArray);
         while (companiesArray[lastIndex] < end) {
             companiesArray[0]++;
             if (companiesArray[0] > limit) {
                 makeCarryAdjustments(companiesArray, limit);
             }
             checkForTotal(companiesArray, limit);
-
         }
         System.out.println("Thread Ended " + Thread.currentThread().getName() + " start " + this.start + " end " + this.end);
 
@@ -223,7 +216,6 @@ public class PortfolioBuilder implements Runnable {
                         else {
                             companiesArray[index] = Integer.valueOf(percentage);
                         }
-
                         index++;
                     }
                 }

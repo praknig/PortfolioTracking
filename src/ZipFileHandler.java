@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Stack;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -42,21 +41,18 @@ public class ZipFileHandler implements Runnable {
         Stack<File> stckDirectory = new Stack<>();
         List<String> lstFileList = new ArrayList<>();
         do{
-            System.out.println(fl.getAbsolutePath());
+            //System.out.println(fl.getAbsolutePath());
             for(File subFiles:fl.listFiles())
             {
-                System.out.println("subFiles.getAbsolutePath()--->"+subFiles.getAbsolutePath());
                 if(subFiles.isDirectory())
                 {
                     stckDirectory.add(subFiles);
-
                     continue;
                 }
                 if(subFiles.getName().endsWith("_tozip.txt"))
                 {
                     lstFileList.add(subFiles.getAbsolutePath() );
                 }
-
             }
             if(stckDirectory.isEmpty())
             {
@@ -67,7 +63,6 @@ public class ZipFileHandler implements Runnable {
                 fl = stckDirectory.pop();
 
             }
-
         }while(fl!=null);
         return lstFileList;
     }
@@ -77,23 +72,18 @@ public class ZipFileHandler implements Runnable {
         while(true)
         {
             try{
-
                 for(String fileAbsPath:getListToZip())
                 {
                     System.out.println("zipping---->"+fileAbsPath);
                     zipFile(fileAbsPath);
                 }
-
                 Thread.sleep(this.sleepTime);
-
 //                /break;
             }
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
-
             }
         }
-
     }
     public  void zipFile(String fileAbsPath) {
         try {
@@ -101,11 +91,9 @@ public class ZipFileHandler implements Runnable {
             String zipFileName = this.zippFileFolder +  "portfolio_" + System.nanoTime() + ".zip";
             FileOutputStream fos = new FileOutputStream(zipFileName);
             ZipOutputStream zos = new ZipOutputStream(fos);
-
             FileInputStream fis = new FileInputStream(fileToZip);
             ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
             zos.putNextEntry(zipEntry);
-
             byte[] bytes = new byte[4096];
             int length;
             while ((length = fis.read(bytes)) >= 0) {

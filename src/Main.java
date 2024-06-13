@@ -5,10 +5,8 @@ import java.util.List;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        int percision = 3;
-        int limit = (int)Math.pow(10,2+percision);
+
         int numThreads = 4;
-        int window = limit/numThreads;
         List<Thread> lstThreads = new ArrayList<>();
         ZipFileHandler zp = new ZipFileHandler("./");
         int start = Constants.START;
@@ -36,8 +34,5 @@ public class Main {
         {
             ex.printStackTrace();
         }
-
-
-
     }
 }
